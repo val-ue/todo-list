@@ -1,23 +1,31 @@
 /*****General Styles *****/
 .flex {
-    display: flex;
-  }
-  
-  .align-items-center {
-    align-items: center;
-  }
-  
-  .justify-content-center {
-    justify-content: center;
-  }
-  
-  .full-width {
-    width: 100%;
-  }
-  
-  .full-height {
-    height: 100%;
-  }
+  display: flex;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.row {
+  flex-direction: row;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
   
   /***** Styles *****/
   
@@ -29,10 +37,78 @@
   body {
     background-color: #d8a7d8;
     color: black;
-  
     font-family: "Rubik", serif;
     font-size: 16px;
     font-weight: 600;
     margin: 0;
     padding: 0;
+  }
+
+  .submit-container {
+    height: 20%;
+  }
+
+  h1 {
+    height: 45%;
+    margin: 0;
+  }
+
+  input {
+    height: 45%;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+   font-size: 20px;
+    background-color: bisque;
+    border: none;
+    border-bottom: 3px solid black;
+  }
+
+  input:focus {
+    border: none;
+  }
+
+  main {
+    width: 90%;
+  }
+
+  .todo-list, .done-list {
+    width: 47%;
+    gap: 10px;
+    overflow-y: scroll;
+  }
+
+  .both-lists {
+    height: 70%;
+    justify-content: space-between;
+  }
+
+  .checkbox {
+    width: 30%;
+    border: none;
+  }
+
+
+
+  .todo-list {
+    background-color:rgb(127, 180, 175)
+  }
+
+  .done-list {
+    background-color: bisque;
+  }
+
+  .list-item {
+    width: 90%;
+    border-radius: 10px;
+    padding: 7px;
+    gap: 5px;
+  }
+
+  .in-progress {
+    background-color: #FBF4DC;
+  }
+
+  .done {
+    background-color: #93E1FF;
   }
