@@ -13,6 +13,7 @@ let pendingItems = [
   { text: "Need to make pizza", checked: true },
   { text: "Need to make pizza", checked: true },
 ];
+
 let doneItems = [
   { text: "Finished making cinnamon rolls", checked: true },
   { text: "Finished making cinnamon rolls", checked: true },
@@ -39,8 +40,19 @@ entry.addEventListener("keypress", (e) => {
 
 const clickCheckbox = (itemBox) => {
 
-    todoList.remove(itemBox);
-    console.log('hi');
+    itemBox.remove();
+    console.log(itemBox);
+
+    //we pass in the index as a paramater too
+    //we make it so that when we press +, it 
+    // pushes the new item to the array and then 
+    // we have a function thats like, for the
+    // last thing on the array, we create the item. 
+
+    //OR we could return the index when we create the newItem. 
+    //and then keep the indexes in their own array/?
+    //so when we delete it, we get the index and use it 
+    // to delete from the array
 
     //removes that specific item from list
     //removes it from array
@@ -54,6 +66,8 @@ const clickCheckbox = (itemBox) => {
 const createTask = (array, text, type, list) => {
   const newItem = { text: inputText, checked: false };
   array.push(newItem);
+
+  console.log(array);
 
   const itemBox = document.createElement("div");
   itemBox.classList.add("list-item");
@@ -72,13 +86,13 @@ const createTask = (array, text, type, list) => {
     list.appendChild(itemBox);
 
     const itemCheckbox = itemBox.querySelector(".checkbox");
-    console.log(itemCheckbox);
+    //console.log(itemCheckbox);
 
-    itemCheckbox.addEventListener("click", clickCheckbox);
+    itemCheckbox.addEventListener("click", () => clickCheckbox(itemBox));
 
+    console.log(itemBox);
 
-    return itemBox;
-    //add event listener for checkbox
+    //return itemBox;
 };
 
 
