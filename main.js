@@ -40,8 +40,13 @@ entry.addEventListener("keypress", (e) => {
 
 const clickCheckbox = (itemBox) => {
 
+    inputText = itemBox.querySelector(".textLine").textContent;
+        console.log(inputText);
+
+    createTask(doneItems, inputText, "done", doneList);
+
+
     itemBox.remove();
-    console.log(itemBox);
 
     //we pass in the index as a paramater too
     //we make it so that when we press +, it 
@@ -53,6 +58,8 @@ const clickCheckbox = (itemBox) => {
     //and then keep the indexes in their own array/?
     //so when we delete it, we get the index and use it 
     // to delete from the array
+
+
 
     //removes that specific item from list
     //removes it from array
@@ -81,7 +88,7 @@ const createTask = (array, text, type, list) => {
         <input type="checkbox" class="checkbox" />
         <span class="checkmark"></span>
     </label>
-    <p>${text}</p>`;
+    <p class="textLine">${text}</p>`;
 
     list.appendChild(itemBox);
 
@@ -93,6 +100,8 @@ const createTask = (array, text, type, list) => {
     console.log(itemBox);
 
     //return itemBox;
+
+    //use ids to connect to arrays
 };
 
 
