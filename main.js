@@ -7,7 +7,7 @@ const add = get(".add");
 const todoList = get(".todo-list");
 const doneList = get(".done-list");
 
-const checkboxes = document.querySelectorAll('.checkbox');
+const checkboxes = document.querySelectorAll(".checkbox");
 
 let pendingItems = [
   { text: "Need to make pizza", checked: true },
@@ -29,49 +29,49 @@ const prepareCreateTask = () => {
 add.addEventListener("click", prepareCreateTask);
 
 entry.addEventListener("keypress", (e) => {
-    if (e.key === 'Enter') {
-      prepareCreateTask();
-    }
+  if (e.key === "Enter") {
+    prepareCreateTask();
+  }
 });
 
-//first we do a foreach on the nodelist 
-// with a separate function
-//then, for each new one, we add the event listener
+const clickCheckbox = (itemBox, type) => {
+  inputText = itemBox.querySelector(".textLine").textContent;
 
-const clickCheckbox = (itemBox) => {
+  const id = parseInt(itemBox.dataset.id);
 
-    inputText = itemBox.querySelector(".textLine").textContent;
-        console.log(inputText);
+  if (type === "todo") {
+    //find index
+    const findIndex = pendingItems.findIndex(item => item.id === id);
 
+    pendingItems.splice(findIndex, 1); //remove index from pending array
     createTask(doneItems, inputText, "done", doneList);
 
+  } else {
+    //get index
+    doneItems.splice(index, 1); 
+  }
 
-    itemBox.remove();
+  itemBox.remove();
 
-    //we pass in the index as a paramater too
-    //we make it so that when we press +, it 
-    // pushes the new item to the array and then 
-    // we have a function thats like, for the
-    // last thing on the array, we create the item. 
-
-    //OR we could return the index when we create the newItem. 
-    //and then keep the indexes in their own array/?
-    //so when we delete it, we get the index and use it 
-    // to delete from the array
-
-
-
-    //removes that specific item from list
-    //removes it from array
-    //createtask for done item with same stuff
-
-    //if its already in the done place, it does the
-    //opposite and puts it into the in progress row
 
 };
 
+
+
+
+let idNumber = 0;
+//or whatever the biggest index
+//number is if using local storage
+
+const generateID = () => {
+  idNumber += 1;
+  return idNumber;
+};
+
 const createTask = (array, text, type, list) => {
-  const newItem = { text: inputText, checked: false };
+  const giveId = generateID();
+
+  const newItem = { text: inputText, checked: false, id: giveId };
   array.push(newItem);
 
   console.log(array);
@@ -90,35 +90,20 @@ const createTask = (array, text, type, list) => {
     </label>
     <p class="textLine">${text}</p>`;
 
-    list.appendChild(itemBox);
+  list.appendChild(itemBox);
 
-    const itemCheckbox = itemBox.querySelector(".checkbox");
-    //console.log(itemCheckbox);
+  const itemCheckbox = itemBox.querySelector(".checkbox");
+  //console.log(itemCheckbox);
 
-    itemCheckbox.addEventListener("click", () => clickCheckbox(itemBox));
+  itemCheckbox.addEventListener("click", () => clickCheckbox(itemBox));
+  itemBox.dataset.id = giveId;
 
-    console.log(itemBox);
+  //console.log(itemBox);
 
-    //return itemBox;
+  //return itemBox;
 
-    //use ids to connect to arrays
+  //use ids to connect to arrays
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*array.forEach((item) => {
         const itemBox = document.createElement("div");
