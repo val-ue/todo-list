@@ -6,7 +6,6 @@ const entry = get(".entry");
 const add = get(".add");
 const todoList = get(".todo-list");
 const doneList = get(".done-list");
-
 const checkboxes = document.querySelectorAll(".checkbox");
 
 let pendingItems = [
@@ -23,6 +22,7 @@ let inputText = entry.value;
 
 const prepareCreateTask = () => {
   inputText = entry.value;
+  entry.value = '';
   createTask(pendingItems, inputText, "todo", todoList);
 };
 
@@ -36,27 +36,23 @@ entry.addEventListener("keypress", (e) => {
 
 const clickCheckbox = (itemBox, type) => {
   inputText = itemBox.querySelector(".textLine").textContent;
-
   const id = parseInt(itemBox.dataset.id);
-
   if (type === "todo") {
     //find index
     const findIndex = pendingItems.findIndex(item => item.id === id);
-
     pendingItems.splice(findIndex, 1); //remove index from pending array
-    createTask(doneItems, inputText, "done", doneList);
-
+    //add to done array
+    createTask(doneItems, inputText, "done", doneList, "checked");
   } else {
     //get index
-    doneItems.splice(index, 1); 
+    //doneItems.splice(index, 1);
+    createTask(pendingItems, inputText, "todo", todoList);
+    const findIndex = doneItems.findIndex(item => item.id === id);
+    doneItems.splice(findIndex, 1);//remove index from done array
+
   }
-
   itemBox.remove();
-
-
 };
-
-
 
 
 let idNumber = 0;
@@ -68,12 +64,10 @@ const generateID = () => {
   return idNumber;
 };
 
-const createTask = (array, text, type, list) => {
+const createTask = (array, text, type, list, checked) => {
   const giveId = generateID();
-
   const newItem = { text: inputText, checked: false, id: giveId };
   array.push(newItem);
-
   console.log(array);
 
   const itemBox = document.createElement("div");
@@ -85,39 +79,14 @@ const createTask = (array, text, type, list) => {
 
   itemBox.innerHTML = `
     <label class="checkbox-container flex align-items-center">
-        <input type="checkbox" class="checkbox" />
+        <input type="checkbox" class="checkbox" ${checked}/>
         <span class="checkmark"></span>
     </label>
     <p class="textLine">${text}</p>`;
-
   list.appendChild(itemBox);
-
   const itemCheckbox = itemBox.querySelector(".checkbox");
-  //console.log(itemCheckbox);
 
-  itemCheckbox.addEventListener("click", () => clickCheckbox(itemBox));
+  itemCheckbox.addEventListener("click", () => clickCheckbox(itemBox, type));
   itemBox.dataset.id = giveId;
-
-  //console.log(itemBox);
-
-  //return itemBox;
-
-  //use ids to connect to arrays
 };
 
-/*array.forEach((item) => {
-        const itemBox = document.createElement("div");
-        itemBox.classList.add("list-item");
-        itemBox.classList.add("flex");
-        itemBox.classList.add("row");
-        itemBox.classList.add("align-items-center");
-        itemBox.classList.add(`${type}`);
-
-        itemBox.innerHTML = `
-            <label class="checkbox-container flex align-items-center">
-                <input type="checkbox" class="checkbox" />
-                <span class="checkmark"></span>
-            </label>
-            <p>${text}</p>`
-        ;
-    });*/
