@@ -136,6 +136,10 @@ main {
   transform: rotate(45deg);
 }
 
+.fa-square-xmark {
+  cursor: pointer;
+}
+
 .todo-list {
   /*background-color:rgb(127, 180, 175);*/
 }
