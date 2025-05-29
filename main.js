@@ -4,25 +4,29 @@ const get = function (selector) {
 
 const entry = get(".entry");
 const add = get(".add");
-const todoList = get(".todo-list");
-const doneList = get(".done-list");
+const todoContainer = get(".todo-list");
+const doneContainer = get(".done-list");
 const checkboxes = document.querySelectorAll(".checkbox");
 const deleteIcons = document.querySelectorAll(".x");
 
-pendingItems = JSON.parse(localStorage.getItem("pendingItems") || "[]");
-doneItems = JSON.parse(localStorage.getItem("doneItems") || "[]");
-localStorage.setItem("pendingItems", JSON.stringify(pendingItems));
-localStorage.setItem("doneItems", JSON.stringify(doneItems));
+pendingTasks = JSON.parse(localStorage.getItem("pendingTasks") || "[]");
+doneTasks = JSON.parse(localStorage.getItem("doneTasks") || "[]");
 
+const updateStorage = () => {
+  localStorage.setItem("pendingTasks", JSON.stringify(pendingTasks));
+  localStorage.setItem("doneTasks", JSON.stringify(doneTasks));
+};
 
 let inputText = entry.value;
 
+//if empty, block
+
 const prepareCreateTask = () => {
   inputText = entry.value;
-  entry.value = '';
-  createTask(pendingItems, inputText, "todo", todoList);
-  localStorage.setItem("pendingItems", JSON.stringify(pendingItems));
-  localStorage.setItem("doneItems", JSON.stringify(doneItems));
+  entry.value = "";
+  const pushItem = pushToList(pendingTasks, inputText);
+  createTask(pendingTasks, inputText, "todo", todoContainer, pushItem.id);
+  updateStorage();
 };
 
 add.addEventListener("click", prepareCreateTask);
@@ -34,30 +38,46 @@ entry.addEventListener("keypress", (e) => {
 });
 
 const switchLists = (array, otherArray, id, inputText, type, list, checked) => {
-   const findIndex = array.findIndex(item => item.id === id);
-    array.splice(findIndex, 1); 
-    const newItem = pushToList(otherArray, inputText);
-    createTask(otherArray, inputText, type, list, newItem.id, checked);
+  findAndRemoveId(array, id);
+  const newItem = pushToList(otherArray, inputText);
+  createTask(otherArray, inputText, type, list, newItem.id, checked);
 };
-
 
 const clickCheckbox = (itemBox, type) => {
   inputText = itemBox.querySelector(".textLine").textContent;
   const id = parseInt(itemBox.dataset.id);
   if (type === "todo") {
-    switchLists(pendingItems, doneItems, id, inputText, "done", doneList, "checked");
+    switchLists(
+      pendingTasks,
+      doneTasks,
+      id,
+      inputText,
+      "done",
+      doneContainer,
+      "checked"
+    );
   } else {
-    switchLists(doneItems, pendingItems, id, inputText, "todo", todoList);
+    switchLists(doneTasks, pendingTasks, id, inputText, "todo", todoContainer);
   }
   itemBox.remove();
-  localStorage.setItem("pendingItems", JSON.stringify(pendingItems));
-  localStorage.setItem("doneItems", JSON.stringify(doneItems));
+  updateStorage();
 };
 
-//const maxPendingId = 
-//const maxDoneId = 
+const pendingIds = pendingTasks.map((item) => {
+  return item.id;
+});
 
-let idNumber = 0;//max of all the ids +1
+const doneIds = doneTasks.map((item) => {
+  return item.id;
+});
+
+let maxId = Math.max(...pendingIds, ...doneIds);
+
+if (isNaN(maxId)) {
+  maxId = 0;
+}
+
+let idNumber = maxId;
 
 const generateID = () => {
   idNumber += 1;
@@ -65,10 +85,10 @@ const generateID = () => {
 };
 
 const pushToList = (array, text) => {
-    const giveId = generateID();
-    const newItem = { text: text, id: giveId }; 
-    array.push(newItem);
-    return newItem;
+  const giveId = generateID();
+  const newItem = { text: text, id: giveId };
+  array.push(newItem);
+  return newItem;
 };
 
 const createTask = (array, text, type, list, id, checked) => {
@@ -90,17 +110,30 @@ const createTask = (array, text, type, list, id, checked) => {
 
   itemCheckbox.addEventListener("click", () => clickCheckbox(itemBox, type));
   itemBox.dataset.id = id;
+
+  const deleteBox = itemBox.querySelector(".x");
+  deleteBox.addEventListener("click", () => deleteButton(itemBox, id, array));
+
   return id;
 };
 
-doneItems.forEach(task => {
-  createTask(doneItems, task.text, "done", doneList, task.id, "checked");
+doneTasks.forEach((task) => {
+  createTask(doneTasks, task.text, "done", doneContainer, task.id, "checked");
 });
 
-pendingItems.forEach(task => {
-  createTask(pendingItems, task.text, "todo", todoList, task.id);
+pendingTasks.forEach((task) => {
+  createTask(pendingTasks, task.text, "todo", todoContainer, task.id);
 });
 
-//fix ids
-//set up delete
-//polish css
+const deleteButton = (itemBox, id, array) => {
+  itemBox.remove();
+  findAndRemoveId(array, id);
+  updateStorage();
+};
+
+const findAndRemoveId = (array, id) => {
+  const findIndex = array.findIndex((item) => {
+    return item.id === id;
+  });
+  array.splice(findIndex, 1);
+};
