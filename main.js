@@ -9,8 +9,8 @@ const doneContainer = get(".done-list");
 const checkboxes = document.querySelectorAll(".checkbox");
 const deleteIcons = document.querySelectorAll(".x");
 
-pendingTasks = JSON.parse(localStorage.getItem("pendingTasks") || "[]");
-doneTasks = JSON.parse(localStorage.getItem("doneTasks") || "[]");
+let pendingTasks = JSON.parse(localStorage.getItem("pendingTasks") || "[]");
+let doneTasks = JSON.parse(localStorage.getItem("doneTasks") || "[]");
 
 const updateStorage = () => {
   localStorage.setItem("pendingTasks", JSON.stringify(pendingTasks));
@@ -19,14 +19,16 @@ const updateStorage = () => {
 
 let inputText = entry.value;
 
-//if empty, block
-
 const prepareCreateTask = () => {
   inputText = entry.value;
-  entry.value = "";
-  const pushItem = pushToList(pendingTasks, inputText);
-  createTask(pendingTasks, inputText, "todo", todoContainer, pushItem.id);
-  updateStorage();
+  if (inputText === "") {
+    return;
+  }else {
+    entry.value = "";
+    const pushItem = pushToList(pendingTasks, inputText);
+    createTask(pendingTasks, inputText, "todo", todoContainer, pushItem.id);
+    updateStorage();
+  }
 };
 
 add.addEventListener("click", prepareCreateTask);
@@ -44,7 +46,7 @@ const switchLists = (array, otherArray, id, inputText, type, list, checked) => {
 };
 
 const clickCheckbox = (itemBox, type) => {
-  inputText = itemBox.querySelector(".textLine").textContent;
+  inputText = itemBox.querySelector(".text-line").textContent;
   const id = parseInt(itemBox.dataset.id);
   if (type === "todo") {
     switchLists(
@@ -93,27 +95,21 @@ const pushToList = (array, text) => {
 
 const createTask = (array, text, type, list, id, checked) => {
   const itemBox = document.createElement("div");
-  itemBox.classList.add("list-item");
-  itemBox.classList.add("flex");
-  itemBox.classList.add("row");
-  itemBox.classList.add("align-items-center");
-  itemBox.classList.add(`${type}`);
+  itemBox.classList.add("list-item", "flex", "row", "align-items-center", type);
 
   itemBox.innerHTML = `
     <label class="checkbox-container flex align-items-center">
         <input type="checkbox" class="checkbox" ${checked}/>
         <span class="checkmark"></span>
     </label>
-    <p class="textLine">${text} <span class="x"><i class="fa-solid fa-square-xmark"></i></span></p>`;
+    <p class="text-line">${text} <span class="x"><i class="fa-solid fa-square-xmark"></i></span></p>`;
   list.appendChild(itemBox);
-  const itemCheckbox = itemBox.querySelector(".checkbox");
 
+  const itemCheckbox = itemBox.querySelector(".checkbox");
   itemCheckbox.addEventListener("click", () => clickCheckbox(itemBox, type));
   itemBox.dataset.id = id;
-
   const deleteBox = itemBox.querySelector(".x");
   deleteBox.addEventListener("click", () => deleteButton(itemBox, id, array));
-
   return id;
 };
 
